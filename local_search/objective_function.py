@@ -23,7 +23,7 @@ def checking(data, op, check, collision_num):
     # Return results
     return check, collision_num
 
-def objective_function(data, ops_a, ops_b, M3_collision):
+def objective_function(features, data, ops_a, ops_b):
     """
     The 'objective_function' function calculates the efficiency percentage value
     for the given solution (0-100 for solutions with collisions and 100-200 for
@@ -31,10 +31,12 @@ def objective_function(data, ops_a, ops_b, M3_collision):
     (with wait operations = -1).
 
     Args:
+        features: Dictionary of machine features and extensions values ("Xmin",
+            "Xmax", "Ymax", "M1_head_A", "M2_head_B", "M3_collision",
+            "exten_head_A", "exten_head_B").
         data: List with the values of the operations.
         ops_a: List with the id of operations in head A.
         ops_b: List with the id of operations in head B.
-        M3_collision: Minimum distance between heads.
 
     Returns:
         percent: Solution efficiency percentage.
@@ -63,12 +65,19 @@ def objective_function(data, ops_a, ops_b, M3_collision):
     op_b = 0 # Current operation of head B
     collision_num = 0 # Number of collisions
 
+    # Operations on a wrong head
+    for row in data:
+        if((row[2] <= features["M2_head_B"]) and (row[0] in ops_b)):
+            collision_num = collision_num + 1 # Update collision_num
+        if((row[2] >= features["M1_head_A"]) and (row[0] in ops_a)):
+            collision_num = collision_num + 1 # Update collision_num
+
     # Check loop while there are still operations left on both heads
     while(op_a < len_ops_a and op_b < len_ops_b):
         # If both heads start a new operation at the same time
         if(t_a == t_b):
             # If a collision occurs
-            if(abs(data[ops_b[op_b]-1][2] - data[ops_a[op_a]-1][2]) < M3_collision):
+            if(abs(data[ops_b[op_b]-1][2] - data[ops_a[op_a]-1][2]) < features["M3_collision"]):
                 # Operation added to head A (always predominates)
                 d_head_a.append([ops_a[op_a], data[ops_a[op_a]-1][1], t_a])
                 check, collision_num = checking(data, ops_a[op_a]-1, check, collision_num)
@@ -100,7 +109,7 @@ def objective_function(data, ops_a, ops_b, M3_collision):
             # If head B was already doing an operation when head A starts a new operation
             if(t_a < t_b):
                 # If a collision occurs
-                if(abs(data[ops_b[op_b-1]-1][2] - data[ops_a[op_a]-1][2]) < M3_collision):
+                if(abs(data[ops_b[op_b-1]-1][2] - data[ops_a[op_a]-1][2]) < features["M3_collision"]):
                     # Operation -1 on head A until the operation of head B is finished
                     d_head_a.append([-1, t_b-t_a, t_a])
                     t_a = t_b
@@ -118,7 +127,7 @@ def objective_function(data, ops_a, ops_b, M3_collision):
             # If head A was already doing an operation when head B starts a new operation
             else:
                 # If a collision occurs
-                if(abs(data[ops_b[op_b]-1][2] - data[ops_a[op_a-1]-1][2]) < M3_collision):
+                if(abs(data[ops_b[op_b]-1][2] - data[ops_a[op_a-1]-1][2]) < features["M3_collision"]):
                     # Operation -1 on head B until the operation of head A is finished
                     d_head_b.append([-1, t_a-t_b, t_b])
                     t_b = t_a
@@ -136,7 +145,7 @@ def objective_function(data, ops_a, ops_b, M3_collision):
     # Check loop while there are still operations left only on head A
     while(op_a < len_ops_a):
         # If there is no collision
-        if(t_a >= t_b or not abs(data[ops_b[op_b-1]-1][2] - data[ops_a[op_a]-1][2]) < M3_collision):
+        if(t_a >= t_b or not abs(data[ops_b[op_b-1]-1][2] - data[ops_a[op_a]-1][2]) < features["M3_collision"]):
             # Operation added to head A
             d_head_a.append([ops_a[op_a], data[ops_a[op_a]-1][1], t_a])
 
@@ -154,7 +163,7 @@ def objective_function(data, ops_a, ops_b, M3_collision):
     # Check loop while there are still operations left only on head B
     while(op_b < len_ops_b):
         # If there is no collision
-        if(t_b >= t_a or not abs(data[ops_b[op_b]-1][2] - data[ops_a[op_a-1]-1][2]) < M3_collision):
+        if(t_b >= t_a or not abs(data[ops_b[op_b]-1][2] - data[ops_a[op_a-1]-1][2]) < features["M3_collision"]):
             # Operation added to head B
             d_head_b.append([ops_b[op_b], data[ops_b[op_b]-1][1], t_b])
 

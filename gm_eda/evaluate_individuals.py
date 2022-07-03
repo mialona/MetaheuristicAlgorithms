@@ -20,7 +20,7 @@ def evaluate_individuals(features, data, list_sigmas, n):
 
     for row in list_sigmas:
         # Calculation of the objective function value
-        max_percent, max_ops_a, max_ops_b = max_objective_function(data, row[0], features["M3_collision"])
+        max_percent, max_ops_a, max_ops_b = max_objective_function(features, data, row[0])
 
         # The best percentage and the cut-off point are added to the permutation
         row.append(max_percent)

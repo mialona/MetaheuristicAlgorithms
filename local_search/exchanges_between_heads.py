@@ -3,21 +3,21 @@ import random as rd
 from .objective_function import objective_function
 from .correct_finishing import correct_finishing
 
-def exchanges_between_heads(data, ops_a, ops_b, percent, sum_head_a, sum_head_b, M1_head_A, M2_head_B, M3_collision):
+def exchanges_between_heads(features, data, ops_a, ops_b, percent, sum_head_a, sum_head_b):
     """
     The 'exchanges_between_heads' function exchanges operations randomly between
     head A and B depending on the sum of times of each head.
 
     Args:
+        features: Dictionary of machine features and extensions values ("Xmin",
+            "Xmax", "Ymax", "M1_head_A", "M2_head_B", "M3_collision",
+            "exten_head_A", "exten_head_B").
         data: List with the values of the operations.
         ops_a: List with the id of operations in head A.
         ops_b: List with the id of operations in head B.
         percent: Solution efficiency percentage.
         sum_head_a: Sum of the times of the head A.
         sum_head_b: Sum of the times of the head B.
-        M1_head_A: Maximum coordinate of head A.
-        M2_head_B: Minimum coordinate of head A.
-        M3_collision: Minimum distance between heads.
 
     Returns:
         d_head_a: List with the solution of new operations in head A.
@@ -42,7 +42,7 @@ def exchanges_between_heads(data, ops_a, ops_b, percent, sum_head_a, sum_head_b,
         change = rd.choices([False, True], weights=[probability_b,probability_a])[0]
 
         # Exchange of this operation
-        if(change and data[new_ops_a[i]-1][2] > M2_head_B):
+        if(change and data[new_ops_a[i]-1][2] > features['M2_head_B']):
             new_ops_b.append(new_ops_a[i])
             new_ops_a.pop(i)
         else:
@@ -55,17 +55,17 @@ def exchanges_between_heads(data, ops_a, ops_b, percent, sum_head_a, sum_head_b,
         change = rd.choices([False, True], weights=[probability_a,probability_b])[0]
 
         # Exchange of this operation
-        if(change and data[new_ops_b[i]-1][2] < M1_head_A):
+        if(change and data[new_ops_b[i]-1][2] < features['M1_head_A']):
             new_ops_a.append(new_ops_b[i])
             new_ops_b.pop(i)
         else:
             i = i + 1 # If the exchange is made, it stays in the same position
 
     # Call to finishing correction function
-    ops_a, ops_b = correct_finishing(data, new_ops_a, new_ops_b, M3_collision)
+    ops_a, ops_b = correct_finishing(data, new_ops_a, new_ops_b, features['M3_collision'])
 
     # Call to objective function
-    percent, d_head_a, d_head_b = objective_function(data, ops_a, ops_b, M3_collision)
+    percent, d_head_a, d_head_b = objective_function(features, data, ops_a, ops_b)
 
     # Return results
     return d_head_a, d_head_b, ops_a, ops_b, percent

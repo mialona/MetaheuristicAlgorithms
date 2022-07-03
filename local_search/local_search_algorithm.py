@@ -55,7 +55,7 @@ def local_search_algorithm(features, data, num_rep, num_exchanges):
 
         # Local search for the initial solution
         list_d_head_a, list_d_head_b, list_ops_a, list_ops_b, list_percents = local_search(
-                data, d_head_a, d_head_b, ops_a, ops_b, percent, features["M3_collision"])
+                features, data, d_head_a, d_head_b, ops_a, ops_b, percent)
         percent = list_percents[len(list_percents)-1]
         historical.append(percent) # Percentage added to history
 
@@ -67,16 +67,15 @@ def local_search_algorithm(features, data, num_rep, num_exchanges):
 
             # Exchanges between heads
             d_head_a, d_head_b, ops_a, ops_b, new_percent = exchanges_between_heads(
-                    data, list_ops_a[len(list_ops_a)-1],
+                    features, data, list_ops_a[len(list_ops_a)-1],
                     list_ops_b[len(list_ops_b)-1], percent,
                     sum([row[1] for row in list_d_head_a[len(list_d_head_a)-1]]), # Sum of the times of the head A
-                    sum([row[1] for row in list_d_head_b[len(list_d_head_b)-1]]), # Sum of the times of the head B
-                    features["M1_head_A"], features["M2_head_B"], features["M3_collision"])
+                    sum([row[1] for row in list_d_head_b[len(list_d_head_b)-1]])) # Sum of the times of the head B
 
             # Local search for the exchanged solution
             if(new_percent > percent):
                 list_d_head_a, list_d_head_b, list_ops_a, list_ops_b, list_percents = local_search(
-                        data, d_head_a, d_head_b, ops_a, ops_b, new_percent, features["M3_collision"])
+                        features, data, d_head_a, d_head_b, ops_a, ops_b, new_percent)
                 percent = list_percents[len(list_percents)-1]
                 historical.append(percent) # Percentage added to history
 

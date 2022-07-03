@@ -59,5 +59,5 @@ def genetic_algorithm(features, data, num_rep, prob_mut):
         historical.append(list_population[0][2])
 
     # Return results
-    percent, d_head_a, d_head_b = objective_function(data, list_population[0][0], list_population[0][1], features["M3_collision"])
+    percent, d_head_a, d_head_b = objective_function(features, data, list_population[0][0], list_population[0][1])
     return d_head_a, d_head_b, historical, list_population[0][0], list_population[0][1], percent

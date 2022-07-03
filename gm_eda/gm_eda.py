@@ -99,5 +99,5 @@ def gm_eda(features, data, exploration_rate = 1, max_gen_wo_improvement = 10):
             list_sigmas_se = select_individuals(list_sigmas, n)
 
     # Return results
-    percent, d_head_a, d_head_b = objective_function(data, best_ops_a, best_ops_b, features["M3_collision"])
+    percent, d_head_a, d_head_b = objective_function(features, data, best_ops_a, best_ops_b)
     return d_head_a, d_head_b, historical, best_ops_a, best_ops_b, percent

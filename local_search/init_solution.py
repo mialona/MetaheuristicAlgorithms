@@ -52,7 +52,7 @@ def init_solution(features, data):
     ops_a, ops_b = correct_finishing(data, ops_a, ops_b, features["M3_collision"])
 
     # Call to objective function
-    percent, d_head_a, d_head_b = objective_function(data, ops_a, ops_b, features["M3_collision"])
+    percent, d_head_a, d_head_b = objective_function(features, data, ops_a, ops_b)
 
     # Return results
     return d_head_a, d_head_b, ops_a, ops_b, percent

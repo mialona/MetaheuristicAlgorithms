@@ -1,18 +1,20 @@
 from .objective_function import objective_function
 
-def local_search(data, d_head_a, d_head_b, ops_a, ops_b, percent, M3_collision):
+def local_search(features, data, d_head_a, d_head_b, ops_a, ops_b, percent):
     """
     The 'local_search' function performs a local search for solutions exchanging
     one by one the position of the operations within each head.
 
     Args:
+        features: Dictionary of machine features and extensions values ("Xmin",
+            "Xmax", "Ymax", "M1_head_A", "M2_head_B", "M3_collision",
+            "exten_head_A", "exten_head_B").
         data: List with the values of the operations.
         d_head_a: List with the solution of operations in head A.
         d_head_b: List with the solution of operations in head B.
         ops_a: List with the id of operations in head A.
         ops_b: List with the id of operations in head B.
         percent: Solution efficiency percentage.
-        M3_collision: Minimum distance between heads.
 
     Returns:
         list_d_head_a: List of lists with the solution of new operations in head A.
@@ -64,7 +66,7 @@ def local_search(data, d_head_a, d_head_b, ops_a, ops_b, percent, M3_collision):
                         ops_aux_b[i+1] = b
 
                         # Call to objective function
-                        new_percent, d_head_a, d_head_b = objective_function(data, ops_aux_a, ops_aux_b, M3_collision)
+                        new_percent, d_head_a, d_head_b = objective_function(features, data, ops_aux_a, ops_aux_b)
 
                         # If the new efficiency percentage is better than the previous one, the solution obtained is saved in the lists
                         if(new_percent > list_percents[len(list_percents)-1]):

@@ -1,7 +1,6 @@
 from math import exp
 from random import choices, randrange
 
-from .objective_function import max_objective_function
 from .correct_finishing import correct_finishing
 
 def meila_algorithm(v,n):
