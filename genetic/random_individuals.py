@@ -51,7 +51,7 @@ def random_individuals(features, data, size):
             shuffle(ops_b)
 
         # Call to finishing correction function
-        # ops_a, ops_b = correct_finishing(data, ops_a, ops_b, features["M3_collision"])
+##        ops_a, ops_b = correct_finishing(features, data, ops_a, ops_b)
 
         # Call to objective function
         percent, d_head_a, d_head_b = objective_function(features, data, ops_a, ops_b)

@@ -60,7 +60,7 @@ def gm_eda(features, data, exploration_rate = 1, max_gen_wo_improvement = 10):
     historical.append(list_sigmas_se[0][1])
 
     # Main loop
-    time_max = n*4
+    time_max = n*0.5
     start_time = time()
     while((time() - start_time) < time_max):
         # Estimate the consensus ranking
@@ -70,7 +70,7 @@ def gm_eda(features, data, exploration_rate = 1, max_gen_wo_improvement = 10):
         theta = spread_parameters(list_sigmas_se,sigma_0,n)
 
         # Sample new 10*n − 1 individuals from the probability distribution
-        list_sigmas = sample_distribution(data, sigma_0, theta, exploration_rate, n, 10*n - 1, features["M3_collision"])
+        list_sigmas = sample_distribution(features, data, sigma_0, theta, exploration_rate, n, 10*n - 1)
 
         # Evaluate and select 10*n individuals
         list_sigmas = evaluate_individuals(features, data, list_sigmas, n)

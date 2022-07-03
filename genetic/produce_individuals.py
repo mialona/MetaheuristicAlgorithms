@@ -155,8 +155,8 @@ def produce_individuals(features, data, list_fathers, size, prob_mut):
             decendent_2 = insertion_mutation(decendent_2)
 
         # Call to finishing correction function
-##        decendent_1[0], decendent_1[1] = correct_finishing(data, decendent_1[0], decendent_1[1], features["M3_collision"])
-##        decendent_2[0], decendent_2[1] = correct_finishing(data, decendent_2[0], decendent_2[1], features["M3_collision"])
+##        decendent_1[0], decendent_1[1] = correct_finishing(features, data, decendent_1[0], decendent_1[1])
+##        decendent_2[0], decendent_2[1] = correct_finishing(features, data, decendent_2[0], decendent_2[1])
 
         # Call to objective function
         percent_1, d_head_a_1, d_head_b_1 = objective_function(features, data, decendent_1[0], decendent_1[1])

@@ -24,12 +24,13 @@ def meila_algorithm(v,n):
     # Return results
     return inv_pi
 
-def sample_distribution(data, sigma_0, theta, exploration_rate, n, size, M3_collision):
+def sample_distribution(features, data, sigma_0, theta, exploration_rate, n, size):
     """
     The 'meila_algorithm' function computes the inverted permutation pi from the
     values of V(pi).
 
     Args:
+        features: Dictionary of machine features and extensions values.
         data: List with the values of the operations (columns "ops", "t", "x",
             "y", "seq").
         sigma_0: Consensus ranking.
@@ -77,9 +78,9 @@ def sample_distribution(data, sigma_0, theta, exploration_rate, n, size, M3_coll
         for i in range(n):
             composed.append(inverted[sigma_0[i] - 1])
 
-##        # Call to finishing correction function
-##        random_int = randrange(len(composed)//3, (2*len(composed))//3)
-##        ops_a, ops_b = correct_finishing(data, composed[0:random_int], composed[random_int:len(composed)], M3_collision)
+        # Call to finishing correction function
+        random_int = randrange(len(composed)//3, (2*len(composed))//3)
+        ops_a, ops_b = correct_finishing(features, data, composed[0:random_int], composed[random_int:len(composed)])
 
         # Add to list
         list_sigmas.append([composed])

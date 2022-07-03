@@ -91,20 +91,48 @@ def checking_b(data, op, check, collision_num, ops_b, ops_aux_b, collisions_a, c
     # Return results
     return check, collision_num, ops_aux_b, collisions_a, collisions_b
 
-def correct_finishing(data, ops_a, ops_b, M3_collision):
+def correct_finishing(features, data, ops_a, ops_b):
     """
-    The 'correct_finishing' function .
+    The 'correct_finishing' function eliminates the penalties of the solutions
+    in the objective function.
 
     Args:
+        features: Dictionary of machine features and extensions values ("Xmin",
+            "Xmax", "Ymax", "M1_head_A", "M2_head_B", "M3_collision",
+            "exten_head_A", "exten_head_B").
         data: List with the values of the operations.
         ops_a: List with the id of operations in head A.
         ops_b: List with the id of operations in head B.
-        M3_collision: Minimum distance between heads.
 
     Returns:
         ops_a: New list with the id of operations in head A.
         ops_b: New list with the id of operations in head B.
     """
+
+    # Operations on a wrong head
+    new_ops_a = []
+    new_ops_b = []
+    aux_a = []
+    aux_b = []
+    for row in data:
+        # Head A operations
+        if(row[0] in ops_a):
+            if(row[2] >= features["M1_head_A"]):
+                aux_b.append(row[0])
+            else:
+                new_ops_a.append(row[0])
+
+        # Head A operations
+        if(row[0] in ops_b):
+            if(row[2] <= features["M2_head_B"]):
+                aux_a.append(row[0])
+            else:
+                new_ops_b.append(row[0])
+
+    # Create new operation lists
+    ops_a = new_ops_a + aux_a
+    ops_b = new_ops_b + aux_b
+
 
     # The loop continues until there are no collisions.
     collision_num = None # Number of collisions
@@ -131,7 +159,7 @@ def correct_finishing(data, ops_a, ops_b, M3_collision):
             # If both heads start a new operation at the same time
             if(t_a == t_b):
                 # If a collision occurs
-                if(abs(data[ops_b[op_b]-1][2] - data[ops_a[op_a]-1][2]) < M3_collision):
+                if(abs(data[ops_b[op_b]-1][2] - data[ops_a[op_a]-1][2]) < features['M3_collision']):
                     # Call to checking operation head A function
                     check, collision_num, ops_aux_a, collisions_a, collisions_b = checking_a(data, ops_a[op_a]-1, check, collision_num, ops_a, ops_aux_a, collisions_a, collisions_b)
 
@@ -157,7 +185,7 @@ def correct_finishing(data, ops_a, ops_b, M3_collision):
                 # If head B was already doing an operation when head A starts a new operation
                 if(t_a < t_b):
                     # If a collision occurs
-                    if(abs(data[ops_b[op_b-1]-1][2] - data[ops_a[op_a]-1][2]) < M3_collision):
+                    if(abs(data[ops_b[op_b-1]-1][2] - data[ops_a[op_a]-1][2]) < features['M3_collision']):
                         # Auxiliary variables are updated
                         t_a = t_b
 
@@ -173,7 +201,7 @@ def correct_finishing(data, ops_a, ops_b, M3_collision):
                 # If head A was already doing an operation when head B starts a new operation
                 else:
                     # If a collision occurs
-                    if(abs(data[ops_b[op_b]-1][2] - data[ops_a[op_a-1]-1][2]) < M3_collision):
+                    if(abs(data[ops_b[op_b]-1][2] - data[ops_a[op_a-1]-1][2]) < features['M3_collision']):
                         # Auxiliary variables are updated
                         t_b = t_a
 
@@ -189,7 +217,7 @@ def correct_finishing(data, ops_a, ops_b, M3_collision):
         # Check loop while there are still operations left only on head A
         while(op_a < len_ops_a):
             # If there is no collision
-            if(t_a >= t_b or not abs(data[ops_b[op_b-1]-1][2] - data[ops_a[op_a]-1][2]) < M3_collision):
+            if(t_a >= t_b or not abs(data[ops_b[op_b-1]-1][2] - data[ops_a[op_a]-1][2]) < features['M3_collision']):
                 # Call to checking operation head A function
                 check, collision_num, ops_aux_a, collisions_a, collisions_b = checking_a(data, ops_a[op_a]-1, check, collision_num, ops_a, ops_aux_a, collisions_a, collisions_b)
 
@@ -205,7 +233,7 @@ def correct_finishing(data, ops_a, ops_b, M3_collision):
         # Check loop while there are still operations left only on head B
         while(op_b < len_ops_b):
             # If there is no collision
-            if(t_b >= t_a or not abs(data[ops_b[op_b]-1][2] - data[ops_a[op_a-1]-1][2]) < M3_collision):
+            if(t_b >= t_a or not abs(data[ops_b[op_b]-1][2] - data[ops_a[op_a-1]-1][2]) < features['M3_collision']):
                 # Call to checking operation head B function
                 check, collision_num, ops_aux_b, collisions_a, collisions_b = checking_b(data, ops_b[op_b]-1, check, collision_num, ops_b, ops_aux_b, collisions_a, collisions_b)
 

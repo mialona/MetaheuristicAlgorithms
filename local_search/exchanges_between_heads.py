@@ -62,7 +62,7 @@ def exchanges_between_heads(features, data, ops_a, ops_b, percent, sum_head_a, s
             i = i + 1 # If the exchange is made, it stays in the same position
 
     # Call to finishing correction function
-    ops_a, ops_b = correct_finishing(data, new_ops_a, new_ops_b, features['M3_collision'])
+    ops_a, ops_b = correct_finishing(features, data, new_ops_a, new_ops_b)
 
     # Call to objective function
     percent, d_head_a, d_head_b = objective_function(features, data, ops_a, ops_b)
