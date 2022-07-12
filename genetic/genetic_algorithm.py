@@ -45,6 +45,10 @@ def genetic_algorithm(features, data, num_rep, prob_mut):
 
     # Main loop
     for i in range(num_rep):
+        # If 200% efficiency has been achieved, the loop ends
+        if(list_population[0][2] >= 200):
+            break
+            
         # Select fathers
         list_fathers = select_fathers(list_population, size)
 
